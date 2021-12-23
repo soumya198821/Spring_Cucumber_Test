@@ -9,4 +9,19 @@ import org.springframework.stereotype.Component;
 public class RunConfig {
         @Value("${app.baseurl}")
         private String baseurl;
+
+        @Value("${app.emailId}")
+        private String userEmailId;
+
+        @Value("${app.password}")
+        private String userPassword;
+
+        @Value("${app.recipient.emailId}")
+        private String recipientEmailId;
+
+        @Value("${app.email.subject}")
+        private String userEmailSub;
+
+        @Value("${app.email.msgBody}")
+        private String userMessage;
 }
