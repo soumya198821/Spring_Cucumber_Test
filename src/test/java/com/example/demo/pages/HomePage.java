@@ -1,5 +1,6 @@
 package com.example.demo.pages;
 
+import org.junit.Assert;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,20 +13,23 @@ public class HomePage extends AbstractPage{
     @FindBy(xpath = "//a[@title='Gmail']/img")
     private WebElement gmailImage;
 
-    @FindBy(xpath = "//div[@role='button']/text()")
+    @FindBy(xpath = "//*[text()='Compose']")
     private WebElement composeBtn;
 
-    @FindBy(xpath = "//textarea[@role='combobox']")
+    @FindBy(xpath = "//*[@name='to']")
     private WebElement receiverMailBox;
 
-    @FindBy(xpath = "//input[@name='subjectbox']")
+    @FindBy(xpath = "//*[@name='subjectbox']")
     private WebElement subject;
 
-    @FindBy(xpath = "//*[@role='textbox']")
+    @FindBy(xpath = "//*[@aria-label='Message Body' and @role='textbox']")
     private WebElement msgBody;
 
-    @FindBy(xpath = "//*[text()='Send']")
+    @FindBy(xpath = "//*[contains(@aria-label,'Send') and @data-tooltip]")
     private WebElement sendBtn;
+
+    @FindBy(xpath = "//*[text()='Message sent']")
+    private WebElement msgSent;
 
     @FindBy(xpath = " //a[@role='button']/img")
     private WebElement imageIocnForLogout;
@@ -34,18 +38,28 @@ public class HomePage extends AbstractPage{
     private WebElement signoutBtn;
 
     public void clickComposeEmail(){
-
+        waitForVisibility(gmailImage);
+        isDisplayed(gmailImage);
+        pressXButton(composeBtn,"click on compose btn");
     }
 
     public void provideEmailDetails(String toEmail,String sub, String messageBody){
-
+        waitForVisibility(sendBtn);
+        isDisplayed(receiverMailBox);
+        enterText(receiverMailBox,toEmail,"providing recipients email ");
+        enterText(subject,sub,"providing mail subject");
+        enterText(msgBody,messageBody,"providing mail details");
     }
 
     public void clickOnSendBtn(){
-
+        pressXButton(sendBtn,"click on send button");
+        waitForVisibility(msgSent);
+        Assert.assertEquals("Validate message sent success msg : ","Message sent",msgSent.getText());
     }
 
     public void signOutOfApplication(){
-
+        pressXButton(imageIocnForLogout,"");
+        scrollToElement(signoutBtn);
+        pressXButton(signoutBtn,"");
     }
 }

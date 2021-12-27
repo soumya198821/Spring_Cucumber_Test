@@ -7,13 +7,11 @@ import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class StepDefs {
-//    WebDriver driver;
 
     @Autowired
     private RunConfig runConfig;
@@ -26,10 +24,6 @@ public class StepDefs {
 
     @Before
     public void lunchApplication() throws InterruptedException {
-//        WebDriverManager.chromedriver().setup();
-//        driver = new ChromeDriver();
-//        driver.manage().deleteAllCookies();
-//        driver.get(runConfig.getBaseurl());
         loginPage.navigate(runConfig.getBaseurl());
         Thread.sleep(3000);
     }
@@ -40,9 +34,30 @@ public class StepDefs {
     }
 
     @And("User do login to gmail application using username and password")
-    public void userDoLoginToGmailApplicationUsingUsernameAndPassword() {
+    public void userDoLoginToGmailApplicationUsingUsernameAndPassword() throws InterruptedException {
         loginPage.clickSignInBtn();
         loginPage.provideEmail(runConfig.getUserEmailId());
         loginPage.providePassword(runConfig.getUserPassword());
+    }
+
+    @Given("User click on email compose button")
+    public void userClickOnEmailComposeButton() {
+        homePage.clickComposeEmail();
+    }
+
+    @When("Use provide recipient's email subject and messageBody")
+    public void useProvideRecipientSEmailSubjectAndMessageBody() {
+        homePage.provideEmailDetails
+                (runConfig.getRecipientEmailId(),runConfig.getUserEmailSub(),runConfig.getUserMessage());
+    }
+
+    @Then("User select send email button")
+    public void userSelectSendEmailButton() {
+        homePage.clickOnSendBtn();
+    }
+
+    @And("User logout from the gmail page")
+    public void userLogoutFromTheGmailPage() {
+        homePage.signOutOfApplication();
     }
 }

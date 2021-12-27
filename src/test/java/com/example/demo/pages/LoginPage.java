@@ -26,7 +26,7 @@ public class LoginPage extends AbstractPage{
     @FindBy(css = "#identifierNext > div > button > span")
     private WebElement nextBtn;
 
-    @FindBy(css = "#password")
+    @FindBy(xpath = "//input[@type='password']")
     private WebElement passowrdInputBox;
 
     @FindBy(xpath = "//span[text()='Next']")
@@ -43,7 +43,7 @@ public class LoginPage extends AbstractPage{
         pressXButton(nextBtn,"next button clicked");
     }
 
-    public void providePassword(String pwd){
+    public void providePassword(String pwd) throws InterruptedException {
         waitForVisibility(nextBtnPasswordPage);
         enterText(passowrdInputBox,pwd,"email provided");
         pressXButton(nextBtnPasswordPage,"next button clicked");

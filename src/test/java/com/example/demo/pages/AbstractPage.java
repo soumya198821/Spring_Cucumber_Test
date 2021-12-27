@@ -1,22 +1,18 @@
 package com.example.demo.pages;
 
 import com.example.demo.DriverFactory;
-import com.example.demo.dataSet.RunConfig;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 import java.lang.invoke.MethodHandles;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 public abstract class AbstractPage {
 
@@ -30,6 +26,7 @@ public abstract class AbstractPage {
   public void navigate(final String value) {
     DriverFactory.getInstance().getDriver().manage().deleteAllCookies();
     DriverFactory.getInstance().getDriver().get(value);
+    DriverFactory.getInstance().getDriver().manage().window().maximize();
   }
 
   protected String pageTitle() {
@@ -50,7 +47,7 @@ public abstract class AbstractPage {
     }
   }
 
-  public boolean isElementPresent(WebElement element) {
+  public boolean isDisplayed(WebElement element) {
     boolean isPresent = false;
     try {
       isPresent = element.isDisplayed();
@@ -63,7 +60,7 @@ public abstract class AbstractPage {
 
   public void clearText(WebElement element, String msg) {
     try {
-      isElementPresent(element);
+      waitForVisibility(element);
       LOGGER.info(msg);
       element.clear();
     } catch (Exception e) {
@@ -86,7 +83,7 @@ public abstract class AbstractPage {
 
   public void pressXButton(WebElement element, String msg) {
     try {
-      isElementPresent(element);
+      waitForVisibility(element);
       LOGGER.info(msg);
       element.click();
     } catch (Exception e) {
@@ -106,6 +103,19 @@ public abstract class AbstractPage {
 
   public void quit() {
     DriverFactory.getInstance().getDriver().quit();
+  }
+
+  public void PoolWithFluentWait(WebElement element){
+    try{
+      FluentWait<WebDriver> wait = (WebDriverWait) new FluentWait<WebDriver>(DriverFactory.getInstance().getDriver())
+              .withTimeout(Duration.ofSeconds(30))
+              .pollingEvery(Duration.ofSeconds(5))
+              .ignoring(NoSuchElementException.class);
+      wait.until(ExpectedConditions.visibilityOf(element));
+    }catch (Exception e){
+      LOGGER.info("not able to locate element:" + element.getText());
+      throw e;
+    }
   }
 
 }
